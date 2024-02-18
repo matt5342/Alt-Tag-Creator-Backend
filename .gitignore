@@ -31,7 +31,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-20240217-66080-1gh7oa5-credentials.yml
+/20240217-66080-1gh7oa5-credentials.yml
 
 /public/packs
 /public/packs-test
