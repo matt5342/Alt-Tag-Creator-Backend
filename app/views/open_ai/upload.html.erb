@@ -1,0 +1,108 @@
+<div class="container">
+    <h1 class="text-center mb-4">Generate alt text from image urls</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <%# <%= form_with model: @image_form, url: "/open_ai/upload_image", method: :post, id: 'image_form', html: { class: 'border p-4 rounded bg-light' } do |form| %>
+            <%= form_with model: @image_form, url: "/open_ai/upload_image", method: :post, html: { class: 'border p-4 rounded bg-light' } do |form| %>
+                <% if @image_form.errors.any? %>
+                    <div id="error_explanation" class="alert alert-danger">
+                        <h4 class="alert-heading">Please correct the following <%= pluralize(@image_form.errors.count, "error") %>:</h4>
+
+                        <ul>
+                        <% @image_form.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                        <% end %>
+                        </ul>
+                    </div>
+                <% end %>
+                    <div class="form-check form-check-inline">
+                        <%= form.radio_button :input_type, 'url', id: 'url', name: 'image_form[input_type]', class: 'form-check-input' %>
+                        <%= form.label :input_type, 'Url', value: 'url', name: 'image_form[input_type]', class: 'form-check-label' %>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <%= form.radio_button :input_type, 'text', id: 'text', name: 'image_form[input_type]', class: 'form-check-input' %>
+                        <%= form.label :input_type, 'Text Box', value: 'text', name: 'image_form[input_type]', class: 'form-check-label' %>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <%= form.radio_button :input_type, 'file', id: 'file', name: 'image_form[input_type]', class: 'form-check-input' %>
+                        <%= form.label :input_type, 'Html File', value: 'file', name: 'image_form[input_type]', class: 'form-check-label' %>
+                    </div>
+
+                    <div id="url_form_group" class="form-group mt-4">
+                        <%= form.label :image_url, 'Image Url' %>
+                        <%= form.text_field :image_url, class: 'form-control' %>
+                    </div>
+
+                    <div id="text_form_group" class="form-group mt-4" style="display: none;">
+                        <%= form.label :input_text, 'Text with Image Urls' %>
+                        <%= form.text_area :input_text, class: 'form-control' %>
+                    </div>
+
+                    <div id="file_form_group" class="form-group mt-4" style="display: none;">
+                        <%= form.label :html_file, 'Html File' %>
+                        <%= form.file_field :html_file, class: 'form-control-file' %>
+                    </div>
+                    <%= form.submit 'Upload', class: 'btn btn-primary mt-3' %>
+                <% end %>
+        </div>
+    </div>
+    <% if @response %>
+        <div class="row mt-5" id="results">
+            <div class="col-md-12">
+                <h2 class="text-center">Image Analysis Result</h2>
+                <% if @response != nil %>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <p><%= @response.parsed_response["choices"][0]["message"]["content"] %></p>
+                            <pre>
+                                <%=@response%>
+                            </pre>
+                            <%= JSON.pretty_generate(@response) %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    
+    <%elsif @responses %>
+          <div class="row mt-5" id="results">
+            <div class="col-md-12">
+            <h2 class="text-center">Image Analysis Results</h2>
+            <% @responses.each do |response| %>
+                <% if response != nil %>
+                <div class="card mt-4">
+                    <div class="card-body">
+                    <p><%= response.parsed_response["choices"][0]["message"]["content"] %></p>
+                    <pre>
+                        <%= response %>
+                    </pre>
+                    <%= JSON.pretty_generate(response) %>
+                    </div>
+                </div>
+                <% end %>
+            <% end %>
+            </div>
+        </div>
+    <% end %>
+</div>
+<script>
+$(document).on('turbolinks:load', function() {
+    $('input[type=radio][name="image_form[input_type]"]').change(function() {
+        if (this.value == 'url') {
+            $('#url_form_group').show();
+            $('#text_form_group').hide();
+            $('#file_form_group').hide();
+        }
+        else if (this.value == 'text') {
+            $('#url_form_group').hide();
+            $('#text_form_group').show();
+            $('#file_form_group').hide();
+        }
+        else if (this.value == 'file') {
+            $('#url_form_group').hide();
+            $('#text_form_group').hide();
+            $('#file_form_group').show();
+        }
+    });
+});
+</script>

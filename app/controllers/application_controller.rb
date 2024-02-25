@@ -7,5 +7,10 @@ class ApplicationController < ActionController::Base
         I18n.locale = current_user.try(:locale) || I18n.default_locale
     end
 
+    private
 
+    def current_user
+      @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    end
+    helper_method :current_user
 end
