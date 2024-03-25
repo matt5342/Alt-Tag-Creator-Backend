@@ -17,15 +17,15 @@
                 <% end %>
                     <div class="form-check form-check-inline">
                         <%= form.radio_button :input_type, 'url', id: 'url', name: 'image_form[input_type]', class: 'form-check-input' %>
-                        <%= form.label :input_type, 'Url', value: 'url', name: 'image_form[input_type]', class: 'form-check-label' %>
+                        <%= form.label :input_type, 'Url', value: 'url', for: 'url', name: 'image_form[input_type]', class: 'form-check-label' %>
                     </div>
                     <div class="form-check form-check-inline">
                         <%= form.radio_button :input_type, 'text', id: 'text', name: 'image_form[input_type]', class: 'form-check-input' %>
-                        <%= form.label :input_type, 'Text Box', value: 'text', name: 'image_form[input_type]', class: 'form-check-label' %>
+                        <%= form.label :input_type, 'Text Box', value: 'text', for: 'text', name: 'image_form[input_type]', class: 'form-check-label' %>
                     </div>
                     <div class="form-check form-check-inline">
                         <%= form.radio_button :input_type, 'file', id: 'file', name: 'image_form[input_type]', class: 'form-check-input' %>
-                        <%= form.label :input_type, 'Html File', value: 'file', name: 'image_form[input_type]', class: 'form-check-label' %>
+                        <%= form.label :input_type, 'Html File', value: 'file', for: 'file', name: 'image_form[input_type]', class: 'form-check-label' %>
                     </div>
 
                     <div id="url_form_group" class="form-group mt-4">
@@ -46,44 +46,26 @@
                 <% end %>
         </div>
     </div>
-    <% if @response %>
-        <div class="row mt-5" id="results">
-            <div class="col-md-12">
-                <h2 class="text-center">Image Analysis Result</h2>
-                <% if @response != nil %>
-                    <div class="card mt-4">
-                        <div class="card-body">
-                            <p><%= @response.parsed_response["choices"][0]["message"]["content"] %></p>
-                            <pre>
-                                <%=@response%>
-                            </pre>
-                            <%= JSON.pretty_generate(@response) %>
-                        </div>
-                    </div>
-                <% end %>
-            </div>
-        </div>
-    
-    <%elsif @responses %>
-          <div class="row mt-5" id="results">
-            <div class="col-md-12">
+
+<% if @response %>
+    <div class="row mt-5" id="results">
+        <div class="col-md-12">
             <h2 class="text-center">Image Analysis Results</h2>
-            <% @responses.each do |response| %>
-                <% if response != nil %>
+            <% if @response[:error_message] %>
+                <div class="alert alert-danger" role="alert">
+                    <%= @response[:error_message] %>
+                </div>
+            <% else %>
                 <div class="card mt-4">
                     <div class="card-body">
-                    <p><%= response.parsed_response["choices"][0]["message"]["content"] %></p>
-                    <pre>
-                        <%= response %>
-                    </pre>
-                    <%= JSON.pretty_generate(response) %>
+                        <%= @response[:response].html_safe %>
                     </div>
                 </div>
-                <% end %>
             <% end %>
-            </div>
         </div>
-    <% end %>
+    </div>
+<% end %>
+                            <%# <%= JSON.pretty_generate(@response) %>
 </div>
 <script>
 $(document).on('turbolinks:load', function() {
@@ -104,5 +86,6 @@ $(document).on('turbolinks:load', function() {
             $('#file_form_group').show();
         }
     });
+
 });
 </script>

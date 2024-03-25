@@ -33,6 +33,8 @@ gem 'bootstrap', '~> 5.2', '>= 5.2.3'
 gem 'mini_magick'
 gem 'open-uri'
 
+gem 'rack-cors'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
